@@ -1,0 +1,51 @@
+Qualtrics.SurveyEngine.addOnload(function(){
+
+    function getVar(name){
+        try {
+            return getComputedStyle(document.documentElement)
+                   .getPropertyValue(name).trim() || "";
+        } catch(e){
+            return "";
+        }
+    }
+
+    // Capture Tailwind / UI variables
+    var ringColor = getVar("--tw-ring-color");
+    var ringOffsetColor = getVar("--tw-ring-offset-color");
+    var ringOffsetWidth = getVar("--tw-ring-offset-width");
+    var borderX = getVar("--tw-border-spacing-x");
+    var borderY = getVar("--tw-border-spacing-y");
+
+    // Capture Comet theme variables (examples from your dump)
+    var superColor = getVar("--super-color");
+    var positiveColor = getVar("--positive-color");
+
+    // Store raw values into Embedded Data
+    Qualtrics.SurveyEngine.setEmbeddedData("tw_ring_color", ringColor);
+    Qualtrics.SurveyEngine.setEmbeddedData("tw_ring_offset_color", ringOffsetColor);
+    Qualtrics.SurveyEngine.setEmbeddedData("tw_ring_offset_width", ringOffsetWidth);
+    Qualtrics.SurveyEngine.setEmbeddedData("tw_border_spacing_x", borderX);
+    Qualtrics.SurveyEngine.setEmbeddedData("tw_border_spacing_y", borderY);
+    Qualtrics.SurveyEngine.setEmbeddedData("comet_token_super_color", superColor);
+    Qualtrics.SurveyEngine.setEmbeddedData("comet_token_positive_color", positiveColor);
+
+    // Detection Flags (1 = possible Comet)
+    var cometBlue = (
+        ringColor.includes("59 130 246") || 
+        positiveColor.includes("208") || 
+        superColor.includes("208")
+    ) ? "1" : "0";
+
+    // Set simple flags for your dataset
+    Qualtrics.SurveyEngine.setEmbeddedData("comet_blue_detected", cometBlue);
+
+    // A broader theme-flag: detects any of the Comet tokens you pasted earlier
+    var cometTheme = (
+        superColor !== "" || 
+        positiveColor !== "" || 
+        ringColor !== ""
+    ) ? "1" : "0";
+
+    Qualtrics.SurveyEngine.setEmbeddedData("comet_theme_detected", cometTheme);
+
+});
